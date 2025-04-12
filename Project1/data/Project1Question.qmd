@@ -1,0 +1,40 @@
+---
+title: "Project Proposal – Masculinity Survey"
+format: html
+---
+
+## Research Question
+
+In this project, I want to explore whether men who report difficulty in gauging whether someone wants to be intimate are also more likely to express concern about being falsely accused of sexual harassment.
+
+This question was inspired by ongoing discussions around masculinity, communication, and consent. Prior work and public conversations have pointed to discomfort or confusion around boundaries and a fear of misinterpretation. These fears may be related to deeper perceptions of masculinity and social norms.
+
+## Hypothesis
+
+I hypothesize that men who say it's difficult to tell whether someone is interested in being intimate are more likely to report fear of being falsely accused of sexual harassment.
+
+## Dataset
+
+The dataset is from FiveThirtyEight’s Masculinity Survey, which was originally collected by SurveyMonkey. It includes responses from over 1,600 participants on questions related to masculinity, family, mental health, emotional expression, and personal experiences.
+
+Two of the survey questions are especially important to this project:
+- `q0020_0005`: Responses to “It isn’t always clear how to gauge someone’s interest”
+- `q0011_0002`: Responses to “Greater risk of being accused of sexual harassment”
+
+The dataset also includes demographics and survey weights. It includes both categorical (Likert-scale) and quantitative (age group, weight) data.
+
+## Analysis Plan
+
+I will:
+1. Filter the dataset to respondents who answered both key questions.
+2. Create a contingency table comparing their answers.
+3. Use a chi-square test to see if there’s a significant association.
+4. Use Cramér’s V to measure the strength of the relationship.
+5. Create a visual bar chart showing the distribution of responses.
+
+## Glimpse of Data
+
+```{r}
+library(dplyr)
+raw <- read.csv("data/raw.csv")
+glimpse(raw)
