@@ -1,26 +1,29 @@
----
-title: "Project 2"
-author: "Sanjana Sasmal"
-format: md
-execute:
-  echo: true
----
+# Project 2
+Sanjana Sasmal
 
 ## Research Question
 
-What emotional and social beliefs are common among men when it comes to masculinity, workplace expectations, relationships, and consent?
+What emotional and social beliefs are common among men when it comes to
+masculinity, workplace expectations, relationships, and consent?
 
 ### Objective
 
-This is a descriptive analysis to explore key beliefs and behaviors related to masculinity — including emotional expression, pressures to provide or stay strong, and how men gauge romantic interest or perceive false accusations.
+This is a descriptive analysis to explore key beliefs and behaviors
+related to masculinity — including emotional expression, pressures to
+provide or stay strong, and how men gauge romantic interest or perceive
+false accusations.
 
-Subgroup comparisons (like men who feel “at greater risk of being falsely accused”) will be explored in Project 3.
+Subgroup comparisons (like men who feel “at greater risk of being
+falsely accused”) will be explored in Project 3.
 
 ------------------------------------------------------------------------
 
 ## Description of the Data
 
-The data comes from FiveThirtyEight’s 2018 survey *“What It Means to Be a Man”*, which asked U.S. men about masculinity, relationships, workplace culture, emotions, and societal pressures. The full dataset contains responses to dozens of questions.
+The data comes from FiveThirtyEight’s 2018 survey *“What It Means to Be
+a Man”*, which asked U.S. men about masculinity, relationships,
+workplace culture, emotions, and societal pressures. The full dataset
+contains responses to dozens of questions.
 
 We analyze key questions related to:
 
@@ -33,12 +36,34 @@ We analyze key questions related to:
 
 ## Load and Prepare Data
 
-```{r}
+``` r
 library(tidyverse)
+```
 
+    ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ✔ dplyr     1.1.4     ✔ readr     2.1.5
+    ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+    ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+    ✔ purrr     1.0.4     
+    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ✖ dplyr::filter() masks stats::filter()
+    ✖ dplyr::lag()    masks stats::lag()
+    ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
 # Load full dataset
 data <- read_csv("masculinity.csv")
 ```
+
+    Rows: 1615 Columns: 60
+    ── Column specification ────────────────────────────────────────────────────────
+    Delimiter: ","
+    chr (59): q0007_0001, q0007_0002, q0007_0003, q0007_0004, q0007_0005, q0007_...
+    dbl  (1): X
+
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ------------------------------------------------------------------------
 
@@ -46,7 +71,7 @@ data <- read_csv("masculinity.csv")
 
 ### Do men think about their behavior at work differently based on #MeToo movement? (`q0015`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0015)) %>%
   count(q0015) %>%
@@ -56,11 +81,13 @@ data %>%
        x = "Response", y = "Number of Respondents")
 ```
 
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-2-1.png)
+
 ## Most men say they did not change their behavior at work based on the meToo movement
 
 ### Men who have confronted someone who was accused of sexual harassment (`q0012_0001`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0012_0001)) %>%
   ggplot(aes(x = factor(q0012_0001))) +
@@ -69,13 +96,16 @@ data %>%
        x = "1 = Yes, NA = No", y = "Number of Respondents")
 ```
 
-Very few, less than 1/8 of the men have not confronted someone who was accused of sexual harassment
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+
+Very few, less than 1/8 of the men have not confronted someone who was
+accused of sexual harassment
 
 ------------------------------------------------------------------------
 
 ### Men who have contacted the manager of someone accused of sexual harassment (`q0012_0003`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0012_0003)) %>%
   ggplot(aes(x = factor(q0012_0003))) +
@@ -84,13 +114,16 @@ data %>%
        x = "1 = Yes, NA = No", y = "Number of Respondents")
 ```
 
-Very few, less than 1/8 of the men have not confronted the manager of someone who was accused of sexual harassment either
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+
+Very few, less than 1/8 of the men have not confronted the manager of
+someone who was accused of sexual harassment either
 
 ------------------------------------------------------------------------
 
-### Men who think every situation is different when it comes to guaging someone's interest when they want to be physicially intimate with them (`q0020_0004`)
+### Men who think every situation is different when it comes to guaging someone’s interest when they want to be physicially intimate with them (`q0020_0004`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0020_0004)) %>%
   ggplot(aes(x = factor(q0020_0004))) +
@@ -99,13 +132,16 @@ data %>%
        x = "1 = Yes, NA = No", y = "Number of Respondents")
 ```
 
-Over half of the men said that every situation is different when it comes to guaging mutual interest in physical intimacy.
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+
+Over half of the men said that every situation is different when it
+comes to guaging mutual interest in physical intimacy.
 
 ------------------------------------------------------------------------
 
 ### Have children? (`q0025_0002`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0025_0002)) %>%
   ggplot(aes(x = factor(q0025_0002))) +
@@ -114,7 +150,10 @@ data %>%
        x = "1 = Yes, NA = No", y = "Number of Respondents")
 ```
 
-Over half of the respondents say they have one or more children 18 or older.
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+
+Over half of the respondents say they have one or more children 18 or
+older.
 
 ------------------------------------------------------------------------
 
@@ -122,7 +161,7 @@ Over half of the respondents say they have one or more children 18 or older.
 
 ### MeToo Behavior Change vs Consent Judgement (`q0015` × `q0020_0004`)
 
-```{r}
+``` r
 data %>%
   filter(!is.na(q0015), !is.na(q0020_0004)) %>%
   count(q0015, q0020_0004) %>%
@@ -133,11 +172,13 @@ data %>%
        y = "Count", fill = "q0020_0004")
 ```
 
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+
 ## Regardless of whether men changed their behavior after the MeToo movement, a majority in both groups believe that gauging interest depends on the situation. So contextual thinking around consent is a fairly common belief among men, even among those who did not take direct behavioral action.
 
 ## Overall, I have set up the data so I can take the data of the men who said they feel at a greater risk of being falsley accused, and find correlations with their other answers to other questions relavent to consent and sexual harassment.
 
-```{r}
+``` r
 library(stringr)
 
 data %>%
@@ -161,30 +202,32 @@ data %>%
     y = "Number of Respondents",
     fill = "Gauges Interest via Body Language"
   )
-
-
-
 ```
+
+![](eda.markdown_strict_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
 ## Among the men who answered questions about crying, consent, and feeling at risk of false accusations, most say they cry rarely or never whether they feel at risk or not. Something to point out is that this plot only shows men who don’t use body language to gauge consent. That might mean the guys who do use body language didn’t answer the crying or false accusation questions, so we’re not seeing the full picture.
 
 ## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+Quarto enables you to weave together content and executable code into a
+finished document. To learn more about Quarto see <https://quarto.org>.
 
 ## Running Code
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+When you click the **Render** button a document will be generated that
+includes both content and the output of embedded code. You can embed
+code like this:
 
-```{r}
+``` r
 1 + 1
 ```
 
+    [1] 2
+
 You can add options to executable code like this
 
-```{r}
-#| echo: false
-2 * 2
-```
+    [1] 4
 
-The `echo: false` option disables the printing of code (only output is displayed).
+The `echo: false` option disables the printing of code (only output is
+displayed).
