@@ -208,26 +208,3 @@ data %>%
 
 ## Among the men who answered questions about crying, consent, and feeling at risk of false accusations, most say they cry rarely or never whether they feel at risk or not. Something to point out is that this plot only shows men who don’t use body language to gauge consent. That might mean the guys who do use body language didn’t answer the crying or false accusation questions, so we’re not seeing the full picture.
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a
-finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that
-includes both content and the output of embedded code. You can embed
-code like this:
-
-``` r
-1 + 1
-```
-
-    [1] 2
-
-You can add options to executable code like this
-
-    [1] 4
-
-The `echo: false` option disables the printing of code (only output is
-displayed).
