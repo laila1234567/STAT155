@@ -1,5 +1,3 @@
-# test
-
 
 ### Welcome to my project repo for STAT15
 
