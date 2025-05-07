@@ -12,9 +12,10 @@ When you click the **Render** button a document will be generated that
 includes both content and the output of embedded code. You can embed
 code like this:
 
-``` r
-1 + 1
+```{r}
+gchgc
 ```
+
 
     [1] 2
 
