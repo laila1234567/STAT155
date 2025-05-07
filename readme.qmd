@@ -4,23 +4,14 @@ format: md
 editor: visual
 ---
 
-## My project
+## Masculinity Survey Study: Analyzing the other beliefs and traits of men who feel at risk of sexual harassment accusations in the work place
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+This project investigates the social and emotional beliefs of U.S. men in relation to masculinity, consent, and perceptions of false accusations of sexual harassment, using data from FiveThirtyEight’s 2018 “What It Means to Be a Man” survey. This project explores patterns of emotional expression, consent behaviors, and workplace-related attitudes. The final goal is to build a predictive model identifying which beliefs and behaviors are most associated with men who feel at greater risk of being falsely accused.
 
-## Running Code
+## Contents
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+-   Project 1 will have an explanation of the data source, variable dictionary, and all preprocessing steps used to clean and prepare the data for analysis.
 
-```{r}
-1 + 1
-```
+-   Project 2 is an Exploratory Data Analysis (EDA), including visualizations and summary statistics related to emotional behavior, consent, and workplace beliefs. It focuses on univariate and bivariate insights.
 
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+-   Project 3 plans to use logistic regression or classification models to explore which variables are associated with feeling “at greater risk of being falsely accused.” This project will also summarize key EDA findings and interprets the model results.
