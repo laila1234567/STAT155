@@ -1,7 +1,7 @@
 ---
 title: "Project3"
 author: "Sanjana Sasmal"
-format: html
+format: md
 execute:
   echo: true
 ---
