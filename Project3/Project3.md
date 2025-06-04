@@ -40,152 +40,92 @@ library(janitor)
 ``` r
 library(tidyr)
 
-data <- read_csv("data/masculinity.csv") %>%
-  clean_names()
+raw <- read.csv("../Project1/data/raw.csv")
+
+#binary variables
+raw$Q11binary <- ifelse(raw$q0011_0002 == "Greater risk of being accused of sexual harassment", 1, 0)
+raw$cry_regular <- ifelse(raw$q0007_0004 %in% c("Often", "Sometimes"), 1, 0)
+raw$changed_behavior <- ifelse(raw$q0015 == "Yes", 1, 0)
+raw$reads_body <- ifelse(raw$q0020_0001 == "Read their physical body language to see if they are interested", 1, 0)
+raw$method_verbalask <- ifelse(raw$q0020_0002 == "Ask for a verbal confirmation of consent", 1, 0)
+raw$method_makeamove <- ifelse(raw$q0020_0003 == "Make a physical move to see how they react", 1, 0)
+raw$method_everydiff <- ifelse(raw$q0020_0004 == "Every situation is different", 1, 0)
+raw$method_unclear <- ifelse(raw$q0020_0005 == "It isn’t always clear how to gauge someone’s interest", 1, 0)
+raw$method_other <- ifelse(!is.na(raw$q0020_0006), 1, 0)
+
+#logistic regression model
+model <- glm(Q11binary ~ cry_regular + changed_behavior + reads_body +
+               method_verbalask + method_makeamove + method_everydiff +
+               method_unclear + method_other,
+             data = raw, family = binomial)
+
+summary(model)
 ```
 
-    Rows: 1615 Columns: 60
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (59): q0007_0001, q0007_0002, q0007_0003, q0007_0004, q0007_0005, q0007_...
-    dbl  (1): X
 
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    Call:
+    glm(formula = Q11binary ~ cry_regular + changed_behavior + reads_body + 
+        method_verbalask + method_makeamove + method_everydiff + 
+        method_unclear + method_other, family = binomial, data = raw)
+
+    Coefficients: (2 not defined because of singularities)
+                     Estimate Std. Error z value Pr(>|z|)    
+    (Intercept)       -0.5258     0.1617  -3.251 0.001150 ** 
+    cry_regular       -0.1419     0.1568  -0.905 0.365462    
+    changed_behavior   0.6131     0.1610   3.807 0.000141 ***
+    reads_body         0.4850     0.1663   2.916 0.003549 ** 
+    method_verbalask  -0.2665     0.1701  -1.567 0.117227    
+    method_makeamove   0.2431     0.1895   1.283 0.199434    
+    method_everydiff   0.2305     0.1566   1.472 0.140965    
+    method_unclear         NA         NA      NA       NA    
+    method_other           NA         NA      NA       NA    
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1028.50  on 741  degrees of freedom
+    Residual deviance:  995.52  on 735  degrees of freedom
+      (873 observations deleted due to missingness)
+    AIC: 1009.5
+
+    Number of Fisher Scoring iterations: 4
+
+## Model Summary
+
+Two predictors found:
+
+-   Changed behavior: People who said “yes” to changing their behavior
+    due to harassment were more likely to say men are at greater risk of
+    being accused.
+-   Reading body language: Those who rely on nonverbal cues to gauge
+    interest also had higher chance of believing they are at risk.
+
+These may reflect a sense of uncertainty and self-protection around
+consent.
+
+Several other behaviors did not show a strong effect, and some responses
+were too sparse to analyze (causing `NA` results).
+
+## Coefficient Plot
 
 ``` r
-# Filtering to get the "greater risk of being accused" men
-at_risk_data <- data %>%
-  filter(q0011_0002 == "Greater risk of being accused of sexual harassment")
-  
-at_risk_data %>%
-  filter(!is.na(q0007_0004)) %>%
-  ggplot(aes(x = q0007_0004)) +
-  geom_bar(fill = "skyblue") +
+#Extract coefficients and confidence intervals
+library(broom)
+library(ggplot2)
+
+coefs <- tidy(model, conf.int = TRUE) %>%
+  filter(!is.na(estimate))
+
+ggplot(coefs, aes(x = reorder(term, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  coord_flip() +
   labs(
-    title = "How Often 'greater risk of being accused of sexual harrassment' Respondents Cry",
-    x = "Crying Frequency",
-    y = "Count"
+    title = "Effect of Behaviors on Belief in False Accusation Risk",
+    x = "Predictor",
+    y = "Estimated Coefficient (Log-Odds)"
   )
 ```
 
-![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-1-1.png)
-
-``` r
-at_risk_data %>%
-  filter(!is.na(q0020_0001)) %>%
-  ggplot(aes(x = q0020_0001)) +
-  geom_bar(fill = "lightgreen") +
-  labs(
-    title = "Consent Method: Reading Body Language (men feeling at risk of sexual assault accusations)",
-    x = "Response",
-    y = "Count"
-  )
-```
-
-![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-1-2.png)
-
-``` r
-consent_long <- at_risk_data %>%
-  select(q0020_0001:q0020_0005) %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  filter(!is.na(response))
-
-ggplot(consent_long, aes(x = question, fill = response)) +
-  geom_bar(position = "dodge") +
-  labs(
-    title = "Consent Methods Among 'men feeling at risk of sexual assault accusations' Respondents",
-    x = "Consent Question",
-    y = "Number of Respondents",
-    fill = "Response"
-  )
-```
-
-![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-1-3.png)
-
-``` r
-## Consent Method Comparison (except in proportional view)
-at_risk_data <- data %>%
-  filter(q0011_0002 == "Greater risk of being accused of sexual harassment")
-
-# Pivoting all 5 consent questions to long format
-consent_long_all <- at_risk_data %>%
-  select(q0020_0001:q0020_0005) %>%
-  pivot_longer(cols = everything(), names_to = "method", values_to = "response") %>%
-  filter(!is.na(response))
-  
-# Plotting proportional responses by method:::
-ggplot(consent_long_all, aes(x = method, fill = response)) +
-  geom_bar(position = "fill") +
-  labs(
-    title = "Proportional Use of Consent Methods (men feeling at risk of sexual assault accusations)",
-    x = "Consent Method",
-    y = "Proportion of Respondents",
-    fill = "Response"
-  ) +
-  theme(axis.text.x = element_text(angle = 25, hjust = 1))
-```
-
-![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-1-4.png)
-
-``` r
-## Response to Witnessed Harassment (men feeling at risk of sexual assault accusations)
-
-# Select harassment-related questions
-harassment_responses <- at_risk_data %>%
-  select(q0012_0001:q0012_0007)
-
-# Pivot longer and filter out missing
-harassment_long <- harassment_responses %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  filter(!is.na(response))
-
-# Plot the responses
-ggplot(harassment_long, aes(x = question, fill = response)) +
-  geom_bar(position = "dodge") +
-  labs(
-    title = "Response to Witnessed Harassment (men feeling at risk of sexual assault accusations)",
-    x = "Action Taken (q0012_xxx)",
-    y = "Number of Respondents",
-    fill = "Response"
-  )
-```
-
-![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-1-5.png)
-
-## Interpretation:
-
-The “Proportional Use of Consent Methods (men feeling at risk of sexual
-assault accusations)” plot focuses on how men who believe they are at
-greater risk of being accused of sexual harassment responded to a series
-of questions about how they typically gauge another person’s interest in
-physical intimacy. These questions (q0020_0001 to q0020_0005) include
-different approaches to assessing consent, such as reading body
-language, asking for verbal confirmation, making a physical move to see
-how someone reacts, and indicating that “every situation is different.”
-
-Each group of bars corresponds to one of the five consent related
-questions, and the different colors within each group show how often
-respondents selected each type of response. For example, one response
-might indicate agreement, another might indicate disagreement, and some
-might show uncertainty or lack of clarity. By presenting the data this
-way, we can see how commonly each consent method is used among this
-specific subgroup of men who feel especially vulnerable to accusations.
-
-From the graph, we can see specific patterns in their behavior. Since a
-large number of respondents said they read body language to determine
-consent, it may suggest that this method is widely relied on, even among
-those who feel at risk. Since relatively few respondents said they ask
-for verbal confirmation, that might highlight a potential disconnect
-between feeling at risk and using more explicit or cautious consent
-strategies.
-
-This analysis can give us insight into whether the men who believe they
-are at greater risk of being accused are actually engaging in behaviors
-that could reduce that risk. Alternatively, it may show that some
-continue to rely on more ambiguous consent methods, even though they
-feel vulnerable. This opens up further questions about awareness,
-education, and personal beliefs about responsibility in intimate
-situations.
-
-------------------------------------------------------------------------
+![](Project3.markdown_strict_files/figure-markdown_strict/unnamed-chunk-2-1.png)

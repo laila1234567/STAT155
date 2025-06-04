@@ -1,0 +1,104 @@
+---
+title: "Project 4 Simulation"
+author: "Sanjana Sasmal"
+format: html
+execute:
+  echo: true
+---
+
+## Monte Carlo Simulation Setup
+
+We’re simulating data to resemble the structure of our Project 3 model. We use binary predictors and a logistic regression outcome.
+
+```{r}
+set.seed(123)
+
+# Number of simulations and sample size
+B <- 1000
+n <- 1000
+
+#True coefficients (from Project 3)
+coefs <- c(
+  intercept = -0.8,
+  cry_regular = 0.2,
+  changed_behavior = 0.8,
+  reads_body = 0.7,
+  method_verbalask = -0.1,
+  method_makeamove = 0.1,
+  method_everydiff = -0.2,
+  method_unclear = 0.0,
+  method_other = 0.1
+)
+
+#Creating function to simulate one dataset and fit model
+sim_one <- function() {
+  predictors <- data.frame(
+    cry_regular = rbinom(n, 1, 0.4),
+    changed_behavior = rbinom(n, 1, 0.5),
+    reads_body = rbinom(n, 1, 0.6),
+    method_verbalask = rbinom(n, 1, 0.2),
+    method_makeamove = rbinom(n, 1, 0.5),
+    method_everydiff = rbinom(n, 1, 0.4),
+    method_unclear = rbinom(n, 1, 0.2),
+    method_other = rbinom(n, 1, 0.05)
+  )
+  
+  #Calculates linear predictor....
+  X <- model.matrix(~ ., data = predictors)
+  linpred <- X %*% c(coefs[1], coefs[-1])
+  prob <- 1 / (1 + exp(-linpred))
+  
+  #For binary outcome
+  y <- rbinom(n, 1, prob)
+  
+  #Fit logistic regression model
+  model <- glm(y ~ ., data = predictors, family = binomial)
+  coef(model)
+}
+
+#Simulations
+sim_results <- replicate(B, sim_one())
+sim_results <- t(sim_results)
+
+library(tidyverse)
+sim_df <- as.data.frame(sim_results)
+
+
+## Summary of Simulation Results
+
+# Add true values for comparison
+true_coefs <- coefs[-1]  # remove intercept to match column names
+estimates <- sim_df[, names(true_coefs)]
+
+# Calculate bias and standard deviation for each predictor
+summary_df <- estimates %>%
+  pivot_longer(cols = everything(), names_to = "Predictor", values_to = "Estimate") %>%
+  group_by(Predictor) %>%
+  summarize(
+    Mean = mean(Estimate),
+    SD = sd(Estimate),
+    Bias = mean(Estimate - true_coefs[Predictor]),
+    .groups = "drop"
+  )
+
+summary_df
+
+## Boxplot of Estimated Coefficients
+
+library(ggplot2)
+
+estimates_long <- estimates %>%
+  pivot_longer(cols = everything(), names_to = "Predictor", values_to = "Estimate")
+
+ggplot(estimates_long, aes(x = Predictor, y = Estimate)) +
+  geom_boxplot(fill = "lightblue") +
+  geom_hline(aes(yintercept = true_coefs[Predictor]), linetype = "dashed", color = "red") +
+  labs(
+    title = "Distribution of Estimated Coefficients Across Simulations",
+    x = "Predictor",
+    y = "Estimated Value"
+  ) +
+  theme_minimal()
+```
+
+---
