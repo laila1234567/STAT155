@@ -25,3 +25,7 @@ greater risk of being accused.
 -   [Project 3](Project3) plans to use logistic regression to explore which variables are associated with feeling “at greater
     risk of being accused of sexual harassment.” This project will also summarize key
     EDA findings among at-risk respondents and provides interpretations of the model output and consent-related behaviors.
+    
+-   [Project 4](Project) builds on the logistic regression model from Project 3 by designing a Monte Carlo simulation to assess its performance under different synthetic data conditions. 
+    It evaluates how well the model performs as signal strength varies, using metrics like mean squared error and classification accuracy. 
+    The simulation and results are presented in a structured and reproducible way, with figures and interpretation of the findings.
